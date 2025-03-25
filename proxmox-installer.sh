@@ -379,36 +379,36 @@ case $STEP in
             # Downgrade kernel and headers for Nvidia drivers to install successfully
             # apt install proxmox-kernel-6.5 proxmox-headers-6.5
             # used to be pve-headers, but that will use latest version (which is currently 6.8)
-            run_command "Installing packages" "info" "apt install -y git build-essential dkms proxmox-kernel-6.5 proxmox-headers-6.5 mdevctl megatools"
+            run_command "Installing packages" "info" "apt install -y git build-essential proxmox-headers-6.8.8-4-pve dkms mdevctl megatools"
 
-            # Pinning the kernel
-            kernel_version_compare() {
-                ver1=$1
-                ver2=$2
-                printf '%s\n' "$ver1" "$ver2" | sort -V -r | head -n 1
-            }
+            # # Pinning the kernel
+            # kernel_version_compare() {
+            #     ver1=$1
+            #     ver2=$2
+            #     printf '%s\n' "$ver1" "$ver2" | sort -V -r | head -n 1
+            # }
 
-            # Get the kernel list and filter for 6.5 kernels
-            kernel_list=$(proxmox-boot-tool kernel list | grep "6.5")
+            # # Get the kernel list and filter for 6.5 kernels
+            # kernel_list=$(proxmox-boot-tool kernel list | grep "6.5")
 
-            # Check if any 6.5 kernels are available
-            if [[ -n "$kernel_list" ]]; then
-                # Extract the highest version
-                highest_version=""
-                while read -r line; do
-                    kernel_version=$(echo "$line" | awk '{print $1}')
-                    if [[ -z "$highest_version" ]]; then
-                        highest_version="$kernel_version"
-                    else
-                        highest_version=$(kernel_version_compare "$highest_version" "$kernel_version")
-                    fi
-                done <<< "$kernel_list"
+            # # Check if any 6.5 kernels are available
+            # if [[ -n "$kernel_list" ]]; then
+            #     # Extract the highest version
+            #     highest_version=""
+            #     while read -r line; do
+            #         kernel_version=$(echo "$line" | awk '{print $1}')
+            #         if [[ -z "$highest_version" ]]; then
+            #             highest_version="$kernel_version"
+            #         else
+            #             highest_version=$(kernel_version_compare "$highest_version" "$kernel_version")
+            #         fi
+            #     done <<< "$kernel_list"
 
-                # Pin the highest 6.5 kernel
-                run_command "Pinning kernel: $highest_version" "info" "proxmox-boot-tool kernel pin $highest_version"
-            else
-                echo -e "${RED}[!]${NC} No 6.5 kernels installed."
-            fi
+            #     # Pin the highest 6.5 kernel
+            #     run_command "Pinning kernel: $highest_version" "info" "proxmox-boot-tool kernel pin $highest_version"
+            # else
+            #     echo -e "${RED}[!]${NC} No 6.5 kernels installed."
+            # fi
 
             # Running NVIDIA GPU checks
             query_gpu_info() {
