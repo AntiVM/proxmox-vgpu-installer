@@ -362,18 +362,18 @@ case $STEP in
             # APT update/upgrade
             run_command "Running APT Update" "info" "apt update"
 
-            # Prompt the user for confirmation
-            echo ""
-            read -p "$(echo -e "${BLUE}[?]${NC} Do you want to proceed with APT Dist-Upgrade ? (y/n): ")" confirmation
-            echo ""
+            # # Prompt the user for confirmation
+            # echo ""
+            # read -p "$(echo -e "${BLUE}[?]${NC} Do you want to proceed with APT Dist-Upgrade ? (y/n): ")" confirmation
+            # echo ""
 
-            # Check user's choice
-            if [ "$confirmation" == "y" ]; then
-                #echo "running apt dist-upgrade"
-                run_command "Running APT Dist-Upgrade (...this might take some time)" "info" "apt dist-upgrade -y"
-            else
-                echo -e "${YELLOW}[-]${NC} Skipping APT Dist-Upgrade"
-            fi          
+            # # Check user's choice
+            # if [ "$confirmation" == "y" ]; then
+            #     #echo "running apt dist-upgrade"
+            #     run_command "Running APT Dist-Upgrade (...this might take some time)" "info" "apt dist-upgrade -y"
+            # else
+            #     echo -e "${YELLOW}[-]${NC} Skipping APT Dist-Upgrade"
+            # fi          
 
             # APT installing packages
             # Downgrade kernel and headers for Nvidia drivers to install successfully
