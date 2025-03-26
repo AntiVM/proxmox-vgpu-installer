@@ -379,7 +379,7 @@ case $STEP in
             # Downgrade kernel and headers for Nvidia drivers to install successfully
             # apt install proxmox-kernel-6.5 proxmox-headers-6.5
             # used to be pve-headers, but that will use latest version (which is currently 6.8)
-            run_command "Installing packages" "info" "apt install -y git build-essential proxmox-headers-6.8.8-4-pve dkms mdevctl megatools"
+            run_command "Installing packages" "info" "apt install -y git build-essential proxmox-headers-$(uname -r) dkms mdevctl megatools"
 
             # # Pinning the kernel
             # kernel_version_compare() {
