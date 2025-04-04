@@ -229,6 +229,7 @@ EOF
 
         # Create .ps1 file for Windows
         cat > "$VGPU_DIR/licenses/license_windows.ps1" <<EOF
+New-Item -Path "C:\Program Files\NVIDIA Corporation\vGPU Licensing\ClientConfigToken" -ItemType Directory -Force
 curl.exe --insecure -L -X GET https://$hostname:$portnumber/-/client-token -o "C:\Program Files\NVIDIA Corporation\vGPU Licensing\ClientConfigToken\client_configuration_token_\$(Get-Date -f 'dd-MM-yy-hh-mm-ss').tok"
 Restart-Service NVDisplay.ContainerLocalSystem
 & 'nvidia-smi' -q  | Select-String "License"
