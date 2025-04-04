@@ -595,26 +595,26 @@ case $STEP in
                 echo ""
                 read -p "$(echo -e "${BLUE}[?]${NC} Do you want me to enable pass through for all other GPU devices? (y/n): ")" enable_pass_through
                 echo ""
-                if [[ "$enable_pass_through" == "y" ]]; then
-                    echo -e "${YELLOW}[-]${NC} Enabling passthrough for devices:"
-                    echo ""
-                    for pci_id in "${!gpu_pci_groups[@]}"; do
-                        if [[ "$pci_id" != "$selected_pci_id" ]]; then
-                            if [ ! -z "$(ls -A /sys/class/iommu)" ]; then
-                                for iommu_dev in $(ls /sys/bus/pci/devices/0000:$pci_id/iommu_group/devices) ; do
-                                    echo "PCI ID: $iommu_dev"
-                                    echo "ACTION==\"add\", SUBSYSTEM==\"pci\", KERNELS==\"$iommu_dev\", DRIVERS==\"*\", ATTR{driver_override}=\"vfio-pci\"" >> /etc/udev/rules.d/90-vfio-pci.rules
-                                done
-                            fi
-                        fi
-                    done
-                    echo ""
-                elif [[ "$enable_pass_through" == "n" ]]; then
-                    echo -e "${YELLOW}[-]${NC} Add these lines by yourself, and execute a modprobe vfio-pci afterwards or reboot the server at the end of the script"
-                    echo ""
-                else
-                    echo -e "${RED}[!]${NC} Invalid input. Please enter (y/n)."
-                fi
+                # if [[ "$enable_pass_through" == "y" ]]; then
+                #     echo -e "${YELLOW}[-]${NC} Enabling passthrough for devices:"
+                #     echo ""
+                #     for pci_id in "${!gpu_pci_groups[@]}"; do
+                #         if [[ "$pci_id" != "$selected_pci_id" ]]; then
+                #             if [ ! -z "$(ls -A /sys/class/iommu)" ]; then
+                #                 for iommu_dev in $(ls /sys/bus/pci/devices/0000:$pci_id/iommu_group/devices) ; do
+                #                     echo "PCI ID: $iommu_dev"
+                #                     echo "ACTION==\"add\", SUBSYSTEM==\"pci\", KERNELS==\"$iommu_dev\", DRIVERS==\"*\", ATTR{driver_override}=\"vfio-pci\"" >> /etc/udev/rules.d/90-vfio-pci.rules
+                #                 done
+                #             fi
+                #         fi
+                #     done
+                #     echo ""
+                # elif [[ "$enable_pass_through" == "n" ]]; then
+                #     echo -e "${YELLOW}[-]${NC} Add these lines by yourself, and execute a modprobe vfio-pci afterwards or reboot the server at the end of the script"
+                #     echo ""
+                # else
+                #     echo -e "${RED}[!]${NC} Invalid input. Please enter (y/n)."
+                # fi
             fi
 
             #echo "VGPU_SUPPORT: $VGPU_SUPPORT"
@@ -627,10 +627,10 @@ case $STEP in
                 if [ "$vendor_id" = "AuthenticAMD" ]; then
                     echo -e "${GREEN}[+]${NC} Your CPU vendor id: ${YELLOW}${vendor_id}"
                     # Check if the required options are already present in GRUB_CMDLINE_LINUX_DEFAULT
-                    if grep -q "amd_iommu=on iommu=pt" /etc/default/grub; then
+                    if grep -q "amd_iommu=force_enable iommu=pt" /etc/default/grub; then
                         echo -e "${YELLOW}[-]${NC} AMD IOMMU options are already set in GRUB_CMDLINE_LINUX_DEFAULT"
                     else
-                        sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/"$/ amd_iommu=on iommu=pt"/' /etc/default/grub
+                        sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/"$/ amd_iommu=force_enable iommu=pt"/' /etc/default/grub
                         echo -e "${GREEN}[+]${NC} AMD IOMMU options added to GRUB_CMDLINE_LINUX_DEFAULT"
                     fi
                 elif [ "$vendor_id" = "GenuineIntel" ]; then
